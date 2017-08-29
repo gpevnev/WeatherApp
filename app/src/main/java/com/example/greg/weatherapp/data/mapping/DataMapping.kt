@@ -1,4 +1,4 @@
-package com.example.greg.weatherapp.dataMapping
+package com.example.greg.weatherapp.data.mapping
 
 import com.example.greg.weatherapp.data.ForecastRequest
 import com.example.greg.weatherapp.data.ForecastResult
@@ -33,9 +33,14 @@ class ForecastDataMapper {
     private fun generateIconUrl(iconCode: String) = "http://openweathermap.org/img/w/$iconCode.png"
 }
 
-class RequestForecastCommand(val ids: List<Int>) : Command<List<CityForecast>> {
+class RequestGroupForecastCommand(val ids: List<Int>) : Command<List<CityForecast>> {
     override fun execute(): List<CityForecast> {
-        val forecastRequest = ForecastRequest(ids)
-        return  ForecastDataMapper().convertFromDataModel(forecastRequest.proceed())
+        return ForecastDataMapper().convertFromDataModel(ForecastRequest().groupRequest(ids))
+    }
+}
+
+class RequestSingleForecastCommand(val id: Int) : Command<CityForecast> {
+    override fun execute(): CityForecast {
+        return ForecastDataMapper().convertFromDataModel(listOf(ForecastRequest().singleRequest(id)))[0]
     }
 }
